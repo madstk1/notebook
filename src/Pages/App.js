@@ -1,10 +1,23 @@
 import React, { Component } from 'react';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import ReactMarkdown from 'react-markdown';
+import { InlineMath, BlockMath } from 'react-katex';
+import math from 'remark-math';
+
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 import Icon from 'Components/Icons';
-import RenderMD, { Source, Destination } from 'Components/Markdown';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
+import 'katex/dist/katex.min.css';
+import 'Static/Markdown.css';
 import 'Static/Style.css';
+
+const mdRenderers = {
+    math       : ({value})     => <BlockMath  math={value} />,
+    inlineMath : ({value})     => <InlineMath math={value} />,
+    code       : ({lang, val}) => <SyntaxHighlighter language={lang} children={val} style={dark} />
+};
 
 class Header extends Component {
     render() {
@@ -31,22 +44,29 @@ class Body extends Component {
 
     OnTextChange(target) {
         this.setState({
-            markdown: RenderMD(target.value),
+            markdown: target.value,
         });
-
         target.rows = target.value.split('\n').length + 1;
     }
 
     render() {
         return (
             <div className="md-body">
-                <Source
+                <textarea
+                    className="markdown-src textbox"
                     onChange={e => this.OnTextChange(e.target)}
-                />
+                    defaultValue="# Markdown"
+                    placeholder="Here goes the Markdown..."
+                >
+                </textarea>
 
-                <Destination 
-                    html={{__html: this.state.markdown}}
-                />
+                <div className="markdown-dst textbox">
+                    <ReactMarkdown
+                        plugins={[math]}
+                        renderers={mdRenderers}
+                        children={this.state.markdown}
+                    />
+                </div>
             </div>
         );
     }

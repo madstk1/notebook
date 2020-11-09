@@ -35,14 +35,3 @@ textarea.markdown-src {
     display: block;
     resize: none;
 }
-
-div.markdown-dst > pre {
-    background-color: #f8f8f8;
-    border-radius: 4px;
-    padding: 0.5em;
-    color: #8e908c;
-}
-
-span.katex-html {
-    display: none;
-}
